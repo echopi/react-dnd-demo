@@ -19,6 +19,7 @@ export interface ContainerState {
 const Container: React.FC = () => {
   {
     const [cards, setCards] = useState<Item[]>([]);
+    const [loading, setLoading] =  useState(false);
 
     useEffect(() => {
       fetchItems().then(setCards);
@@ -47,8 +48,8 @@ const Container: React.FC = () => {
         />
       );
     };
-    const onSubmit = async function onSubmit() {
-      const idOrderMap: SortbyMap = cards
+    const onSubmit = useCallback(async () => {
+      const sortby: SortbyMap = cards
         .map((item, i) => {
           return [item.id, i];
         })
@@ -56,13 +57,15 @@ const Container: React.FC = () => {
           pre[cur[0]] = cur[1];
           return pre;
         }, {});
-      await postDoctorOrders(idOrderMap);
-    }
+      setLoading(true);
+      await postDoctorOrders(sortby);
+      setLoading(false);
+    }, [loading]);
 
     return (
       <>
         <div style={style}>{cards.map((card, i) => renderCard(card, i))}</div>
-        <button onClick={onSubmit}>提交</button>
+        <button onClick={onSubmit} disabled={loading?true:false}>提交</button>
       </>
     );
   }
