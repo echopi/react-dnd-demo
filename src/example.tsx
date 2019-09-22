@@ -1,65 +1,40 @@
-import React, { useState, useCallback } from 'react'
-import Card from './Card'
-import update from 'immutability-helper'
-
+import React, { useState, useCallback, useEffect } from "react";
+import Card from "./Card";
+import update from "immutability-helper";
+import { SortbyMap, fetchItems, postDoctorOrders } from "./service";
+import { async } from "q";
 const style = {
-  width: 400,
-}
+  width: 400
+};
 
 export interface Item {
-  id: number
-  text: string
+  id: number;
+  text: string;
 }
 
 export interface ContainerState {
-  cards: Item[]
+  cards: Item[];
 }
 
 const Container: React.FC = () => {
   {
-    const [cards, setCards] = useState([
-      {
-        id: 1,
-        text: 'Write a cool JS library',
-      },
-      {
-        id: 2,
-        text: 'Make it generic enough',
-      },
-      {
-        id: 3,
-        text: 'Write README',
-      },
-      {
-        id: 4,
-        text: 'Create some examples',
-      },
-      {
-        id: 5,
-        text:
-          'Spam in Twitter and IRC to promote it (note that this element is taller than the others)',
-      },
-      {
-        id: 6,
-        text: '???',
-      },
-      {
-        id: 7,
-        text: 'PROFIT',
-      },
-    ])
+    const [cards, setCards] = useState<Item[]>([]);
+
+    useEffect(() => {
+      fetchItems().then(setCards);
+    }, []);
 
     const moveCard = useCallback(
       (dragIndex: number, hoverIndex: number) => {
-        const dragCard = cards[dragIndex]
+        const dragCard = cards[dragIndex];
         setCards(
           update(cards, {
-            $splice: [[dragIndex, 1], [hoverIndex, 0, dragCard]],
-          }),
-        )
+            $splice: [[dragIndex, 1], [hoverIndex, 0, dragCard]]
+          })
+        );
       },
-      [cards],
-    )
+      [cards]
+    );
 
     const renderCard = (card: { id: number; text: string }, index: number) => {
       return (
@@ -70,15 +45,27 @@ const Container: React.FC = () => {
           text={card.text}
           moveCard={moveCard}
         />
-      )
+      );
+    };
+    const onSubmit = async function onSubmit() {
+      const idOrderMap: SortbyMap = cards
+        .map((item, i) => {
+          return [item.id, i];
+        })
+        .reduce<SortbyMap>((pre, cur) => {
+          pre[cur[0]] = cur[1];
+          return pre;
+        }, {});
+      await postDoctorOrders(idOrderMap);
     }
 
     return (
       <>
         <div style={style}>{cards.map((card, i) => renderCard(card, i))}</div>
+        <button onClick={onSubmit}>提交</button>
       </>
-    )
+    );
   }
-}
+};
 
-export default Container
+export default Container;
