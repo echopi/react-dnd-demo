@@ -2,7 +2,6 @@ import React, { useState, useCallback, useEffect } from "react";
 import Card from "./Card";
 import update from "immutability-helper";
 import { SortbyMap, fetchItems, postDoctorOrders } from "./service";
-import { async } from "q";
 const style = {
   width: 400
 };
