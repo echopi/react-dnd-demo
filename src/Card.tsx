@@ -3,12 +3,13 @@ import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd'
 import ItemTypes from './ItemTypes'
 import { XYCoord } from 'dnd-core'
 
-const style = {
+const style: React.CSSProperties = {
   border: '1px dashed gray',
   padding: '0.5rem 1rem',
   marginBottom: '.5rem',
   backgroundColor: 'white',
   cursor: 'move',
+  userSelect: 'none',
 }
 
 export interface CardProps {
