@@ -4,7 +4,7 @@ import ItemTypes from './ItemTypes'
 import { XYCoord } from 'dnd-core'
 
 const style: React.CSSProperties = {
-  border: '1px dashed gray',
+  border: '1px dashed #999',
   padding: '0.5rem 1rem',
   marginBottom: '.5rem',
   backgroundColor: 'white',

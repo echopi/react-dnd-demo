@@ -16,6 +16,7 @@ export async function postDoctorOrders(sortby: SortbyMap) {
       console.error(e);
       throw e;
     });
+  return result;
 }
 
 export async function fetchItems() {
@@ -28,7 +29,7 @@ export async function fetchItems() {
         data: [],
       }
     });
-  const data = json && json.data || [];
+  const data = json && json.data ? json.data : [];
   return data.map((item: { text: any; name: any; }) => {
     item.text = item.name;
     return item;
